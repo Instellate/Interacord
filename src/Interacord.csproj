@@ -4,17 +4,11 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <FileVersion>0.5.0</FileVersion>
 	<PackageVersion>0.2.0-alpha1</PackageVersion>
+	<RepositoryType>git</RepositoryType>
+	<RepositoryUrl>https://github.com/Instellate/Interacord</RepositoryUrl>
+	<PackageProjectUrl>https://interacord.instellate.xyz/</PackageProjectUrl>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="LICENSE" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="LICENSE" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BitField.Extensions" Version="1.0.3" />
