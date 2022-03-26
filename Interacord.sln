@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test", "test\test.csproj", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{7F7EF013-B350-45F9-B009-6BB7EDD3E010}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicBot", "BasicBot\BasicBot.csproj", "{CDC87ABE-E6CC-44FC-8B57-7AE20882D125}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicBot", "samples\BasicBot\BasicBot.csproj", "{CDC87ABE-E6CC-44FC-8B57-7AE20882D125}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
