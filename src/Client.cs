@@ -10,7 +10,7 @@ using System.Text.Json;
 namespace Interacord
 {
     /// <summary>
-    /// 
+    /// The client class.
     /// </summary>
     public class Client
     {
@@ -21,7 +21,12 @@ namespace Interacord
         internal PublicKey _importedKey;
         internal Dictionary<string, CommandObject> _commands = new();
         internal Dictionary<string, MessageComponentObject> _messageComponents = new();
-
+        /// <summary>
+        /// The primary constructor
+        /// </summary>
+        /// <param name="botToken">The bot token</param>
+        /// <param name="publicKey">The public key</param>
+        /// <param name="port">The port. Primarily 8080</param>
         public Client(string botToken, string publicKey, int port = 8080)
         {
             this._botToken = botToken;
@@ -33,23 +38,39 @@ namespace Interacord
             this._importedKey = PublicKey.Import(algorithm, Convert.FromHexString(this._publicKey), KeyBlobFormat.RawPublicKey);
         }
 
+        /// <summary>
+        /// A method used to start the bot.
+        /// </summary>
         public void Start()
         {
             _webServer.Start();
             _webServer.BeginGetContext(RequestManagement, this);
         }
 
+        /// <summary>
+        /// A method for slash command registration
+        /// </summary>
+        /// <param name="assembly">A assembly array for finding the method's and registrating them</param>
         public void RegisterCommands(Assembly[] assembly)
         {
             this._commands = CommandService.AddCommands(assembly);
             return;
         }
+
+        /// <summary>
+        /// A method for message components.
+        /// </summary>
+        /// <param name="assembly">A assembly array for finding the method's and registrating them</param>
         public void RegisterMessageComponents(Assembly[] assembly)
         {
             this._messageComponents = CommandService.AddMessageComponets(assembly);
             return;
         }
 
+        /// <summary>
+        /// A method that handles request's.
+        /// </summary>
+        /// <param name="result"></param>
         private static async void RequestManagement(IAsyncResult result)
         {
             var algorithm = SignatureAlgorithm.Ed25519;
@@ -139,6 +160,10 @@ namespace Interacord
             return;
         }
     }
+
+    /// <summary>
+    /// A class for sname case naming policy.
+    /// </summary>
     internal class SnakeCaseNamingPolicy : JsonNamingPolicy
     {
         public static SnakeCaseNamingPolicy Instance { get; } = new SnakeCaseNamingPolicy();

@@ -29,6 +29,10 @@ namespace Interacord.Types.Components
         {
             this.Components?.Add(component);
         }
+        public void AddComponents(Component[] components)
+        {
+            this.Components?.AddRange(components);
+        }
     }
     /// <summary>
     /// A class for text input
@@ -64,9 +68,11 @@ namespace Interacord.Types.Components
             this.Options = new List<SelectOption>();
             this.Type = EInteractionComponentT.SelectMenu;
         }
-        public void AddOption(SelectOption selectOption)
+        public void AddOption(string label, string value, bool defaultOption = false)
         {
-            this.Options.Add(selectOption);
+            SelectOption option = new() { Value = value, Label = label, Default = defaultOption };
+
+            Options.Add(option);
         }
     }
     /// <summary>

@@ -22,7 +22,7 @@ namespace Interacord.Types
         public string? Guild_locale { get; set; }
     }
     /// <summary>
-    /// Extended data from <see cref="Interaction"/>
+    /// More interaction data for <see cref="Interaction"/>
     /// </summary>
     public class InteractionData
     {
@@ -37,7 +37,9 @@ namespace Interacord.Types
         public string? TargetId { get; set; }
         public List<Component>? Components { get; set; }
     }
-
+    /// <summary>
+    /// A class for command option's. Used in <seealso cref="Interacord.Types.InteractionData.Options"/>
+    /// </summary>
     public class InteractionOption : IEquatable<InteractionOption>
     {
         public string Name { get; set; } = null!;
@@ -52,11 +54,18 @@ namespace Interacord.Types
         }
     }
 
+    /// <summary>
+    /// Resolved user and member's data. More resolved data is gonna get added later!
+    /// </summary>
     public class ResolvedData
     {
         public Dictionary<string, User>? Users { get; set; }
         public Dictionary<string, GuildMember>? Members { get; set; }
     }
+
+    /// <summary>
+    /// A enum for interaction type.
+    /// </summary>
     public enum EInteractionType
     {
         PING = 1,
@@ -65,6 +74,10 @@ namespace Interacord.Types
         APPLICATION_COMMAND_AUTOCOMPLETE = 4,
         MODAL_SUBMIT = 5,
     }
+
+    /// <summary>
+    /// A enum for command option.
+    /// </summary>
     public enum EInteractionOptionType
     {
         SubCommand = 1,

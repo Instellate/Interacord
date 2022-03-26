@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "test": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "publicKey": "bbe89755b74cffef4be4771a0b6d1f4a49d7af1c06567a9117e52adf75b849e6",
+        "botToken": "ODEzNzA4Nzg2NDkzMTYxNTIz.YDTPXA.hp5OGrl-igqZBT2u_u7kQvJFOso"
+      }
+    }
+  }
+}

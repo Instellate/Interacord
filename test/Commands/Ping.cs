@@ -17,14 +17,12 @@ namespace test.Commands
             var button = new Button() { Style = EButtonStyle.Primary, CustomId = "button", Label = "Hello!" };
             var selectMenu = new SelectMenu() { CustomId = "selectMenu" };
 
-            var option = new SelectOption() { Label = "Hello!", Value = "hello", Description = "Hello world!" };
-            selectMenu.AddOption(option);
+            selectMenu.AddOption("Hello!", "hello");
 
             selectMenu.MinValues = 1;
             selectMenu.MaxValues = 2;
 
-            option = new SelectOption() { Label = "Hi!", Value = "hi", Description = "Hi world!" };
-            selectMenu.AddOption(option);
+            selectMenu.AddOption("Hi!", "hi");
 
             component.AddComponent(button);
             component2.AddComponent(selectMenu);

@@ -72,9 +72,10 @@ namespace Interacord.Context
                 respData.Data!.Flags = (int)bitField.Mask;
             }
 
-            respData.Type = ((EInteractionCallback)5);
+            
 
             if (this.Data!.Data!.ComponentType != null) respData.Type = EInteractionCallback.DEFERRED_UPDATE_MESSAGE;
+            else respData.Type = ((EInteractionCallback)5);
 
             string respDataString = JsonSerializer.Serialize(respData, new JsonSerializerOptions() { PropertyNamingPolicy = new SnakeCaseNamingPolicy() });
             byte[] buffer = System.Text.Encoding.UTF8.GetBytes(respDataString);

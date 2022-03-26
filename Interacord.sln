@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interacord", "src\Interacord.csproj", "{58D4DDD2-06CF-4E39-8937-BB13DC35F4E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interacord", "src\Interacord.csproj", "{58D4DDD2-06CF-4E39-8937-BB13DC35F4E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{D6F4349A-8657-4421-B63B-16DA25335477}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test", "test\test.csproj", "{D6F4349A-8657-4421-B63B-16DA25335477}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{7F7EF013-B350-45F9-B009-6BB7EDD3E010}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicBot", "BasicBot\BasicBot.csproj", "{CDC87ABE-E6CC-44FC-8B57-7AE20882D125}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +25,16 @@ Global
 		{D6F4349A-8657-4421-B63B-16DA25335477}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6F4349A-8657-4421-B63B-16DA25335477}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6F4349A-8657-4421-B63B-16DA25335477}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDC87ABE-E6CC-44FC-8B57-7AE20882D125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDC87ABE-E6CC-44FC-8B57-7AE20882D125}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDC87ABE-E6CC-44FC-8B57-7AE20882D125}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDC87ABE-E6CC-44FC-8B57-7AE20882D125}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CDC87ABE-E6CC-44FC-8B57-7AE20882D125} = {7F7EF013-B350-45F9-B009-6BB7EDD3E010}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {13DE4267-B4E7-4BBB-BD5D-BC7FF8387464}

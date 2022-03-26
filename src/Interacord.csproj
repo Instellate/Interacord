@@ -8,6 +8,8 @@
 	<RepositoryType>git</RepositoryType>
 	<RepositoryUrl>https://github.com/Instellate/Interacord</RepositoryUrl>
 	<PackageProjectUrl>https://interacord.instellate.xyz/</PackageProjectUrl>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>

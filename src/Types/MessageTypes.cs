@@ -2,6 +2,9 @@
 
 namespace Interacord.Types
 {
+    /// <summary>
+    /// A class for message. Primarily used for webhooks.
+    /// </summary>
     public class Message
     {
         public string Id { get; set; } = null!;
@@ -37,7 +40,9 @@ namespace Interacord.Types
             this.Embeds = new List<Embed.Embed>();
         }
     }
-
+    /// <summary>
+    /// A class for stickers.
+    /// </summary>
     public class Sticker
     {
         public string Id { get; set; } = null!;
@@ -53,13 +58,16 @@ namespace Interacord.Types
         public User? User { get; set; }
         public int? SortValue { get; set; }
     }
-
+    /// <summary>
+    /// A class for sticker items.
+    /// </summary>
     public class StickerItem
     {
         public string Id { get; set; } = null!;
         public string Name { get; set; } = null!;
         public int FormatType { get; set; }
     }
+
 
     public class MessageInteraction
     {
