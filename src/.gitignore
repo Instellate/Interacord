@@ -192,17 +192,5 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
-#Custom
-project.lock.json
-/test/Discord.Net.Tests/config.json
-/test/Discord.Net.Tests/cache.db*
-/docs/_build
-*.pyc
-/.editorconfig
-.vscode/
-docs/api/\.manifest
-
-\.idea/
-
 # Codealike UID
 codealike.json
