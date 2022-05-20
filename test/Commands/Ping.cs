@@ -35,7 +35,7 @@ namespace test.Commands
         }
 
         [CommandName(name: "ping")]
-        public static async Task Ping(CommandContext ctx)
+        public static void Ping(CommandContext ctx)
         {
             Embed embed = new Embed();
 
@@ -43,7 +43,7 @@ namespace test.Commands
             embed.SetDescription("A response!");
             embed.SetColor(0xFFC0CB);
 
-            await ctx.FollowUp(embed: embed);
+            ctx.Reply(embed: embed);
 
             return;
         }
@@ -65,39 +65,11 @@ namespace test.Commands
         {
             ctx.DeferReply(ephemeral: true);
 
-            string response = $"<@{ctx.Data!.Member!.User!.Id}> selected ";
-
             var options = ctx.GetSelectOptions();
 
-            int i = 0;
-            foreach (var option in options)
-            {
-                if (i == 0)
-                {
-                    switch (option)
-                    {
-                        case "hi":
-                            response = response + "Hi! ";
-                            break;
-                        case "hello":
-                            response = response + "Hello! ";
-                            break;
-                    }
-                }
-                else
-                {
-                    switch (option)
-                    {
-                        case "hi":
-                            response = response + "and Hi!";
-                            break;
-                        case "hello":
-                            response = response + "and Hello!";
-                            break;
-                    }
-                }
-                i++;
-            }
+            string selected = string.Join(", ", options.ToArray());
+
+            string response = $"<@{ctx.Data!.Member!.User!.Id}> selected {selected}";
 
             await ctx.EditReply(response);
         }

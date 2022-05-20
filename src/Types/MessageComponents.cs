@@ -25,13 +25,15 @@ namespace Interacord.Types.Components
         /// A shortcut to add a component.
         /// </summary>
         /// <param name="component">The component to add.</param>
-        public void AddComponent(Component component)
+        public ActionRow AddComponent(Component component)
         {
             this.Components?.Add(component);
+            return this;
         }
-        public void AddComponents(Component[] components)
+        public ActionRow AddComponents(Component[] components)
         {
             this.Components?.AddRange(components);
+            return this;
         }
     }
     /// <summary>
@@ -68,11 +70,13 @@ namespace Interacord.Types.Components
             this.Options = new List<SelectOption>();
             this.Type = EInteractionComponentT.SelectMenu;
         }
-        public void AddOption(string label, string value, bool defaultOption = false)
+        public SelectMenu AddOption(string label, string value, bool defaultOption = false)
         {
             SelectOption option = new() { Value = value, Label = label, Default = defaultOption };
 
             Options.Add(option);
+
+            return this;
         }
     }
     /// <summary>

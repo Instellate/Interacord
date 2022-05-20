@@ -8,7 +8,7 @@
         public string? Title { get; set; }
         public string? Type { get; set; } = "rich";
         public string? Description { get; set; }
-        public Uri? Url { get; set; }
+        public string? Url { get; set; }
         public string? Timestamp { get; set; }
         public int? Color { get; set; }
         public EmbedFooter? Footer { get; set; }
@@ -27,24 +27,26 @@
         /// Set's the title of the embed.
         /// </summary>
         /// <param name="value">The value of the title.</param>
-        public void SetTitle(string value)
+        public Embed SetTitle(string value)
         {
             this.Title = value;
+            return this;
         }
         /// <summary>
         /// Set's the description of the embed.
         /// </summary>
         /// <param name="value">The value of the description.</param>
-        public void SetDescription(string value)
+        public Embed SetDescription(string value)
         {
             this.Description = value;
+            return this;
         }
         /// <summary>
         /// Add's a field to the embed.
         /// </summary>
         /// <param name="name">The name of the field.</param>
         /// <param name="value">The value of the field.</param>
-        public void AddField(string name, string value)
+        public Embed AddField(string name, string value)
         {
             var field = new EmbedField();
 
@@ -52,14 +54,16 @@
             field.Value = value;
 
             this.Fields.Add(field);
+            return this;
         }
         /// <summary>
         /// Set's the color of the embed.
         /// </summary>
         /// <param name="hex">The hex of the color.</param>
-        public void SetColor(uint hex)
+        public Embed SetColor(uint hex)
         {
             this.Color = (int)hex;
+            return this;
         }
     }
     /// <summary>
@@ -109,8 +113,8 @@
     /// <seealso cref="Embed"/>
     public class EmbedThumbnail
     {
-        public Uri Url { get; set; } = null!;
-        public Uri ProxyUrl { get; set; } = null!;
+        public string Url { get; set; } = null!;
+        public Uri? ProxyUrl { get; set; } = null!;
         public int? Height { get; set; }
         public int? Width { get; set; }
     }
@@ -120,7 +124,7 @@
     /// <seealso cref="Embed"/>
     public class EmbedImage
     {
-        public Uri Url { get; set; } = null!;
+        public string Url { get; set; } = null!;
         public Uri? ProxyUrl { get; set; }
         public int? Height { get; set; }
         public int? Width { get; set; }

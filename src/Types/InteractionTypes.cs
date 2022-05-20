@@ -44,7 +44,7 @@ namespace Interacord.Types
     {
         public string Name { get; set; } = null!;
         public int Type { get; set; }
-        public string? Value { get; set; }
+        public System.Text.Json.JsonElement? Value { get; set; }
         public List<InteractionOption>? Options { get; set; }
         public bool? Focused { get; set; }
         public bool Equals(InteractionOption? other)

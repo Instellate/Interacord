@@ -53,6 +53,8 @@ namespace Interacord.Context
             this._resp.ContentLength64 = buffer.Length;
 
             this._resp.OutputStream.Write(buffer, 0, buffer.Length);
+            this._resp.OutputStream.Flush();
+            this._resp.OutputStream.Dispose();
 
             this._resp.Close();
         }
@@ -72,7 +74,7 @@ namespace Interacord.Context
                 respData.Data!.Flags = (int)bitField.Mask;
             }
 
-            
+
 
             if (this.Data!.Data!.ComponentType != null) respData.Type = EInteractionCallback.DEFERRED_UPDATE_MESSAGE;
             else respData.Type = ((EInteractionCallback)5);
@@ -83,6 +85,8 @@ namespace Interacord.Context
             this._resp.ContentLength64 = buffer.Length;
 
             this._resp.OutputStream.Write(buffer, 0, buffer.Length);
+            this._resp.OutputStream.Flush();
+            this._resp.OutputStream.Dispose();
 
             this._resp.Close();
         }
@@ -115,7 +119,6 @@ namespace Interacord.Context
                 }
 
                 var data = JsonSerializer.Serialize(respData, new JsonSerializerOptions() { PropertyNamingPolicy = new SnakeCaseNamingPolicy() });
-
                 using (HttpResponseMessage response = await webClient.PostAsJsonAsync($"https://discord.com/api/v10/webhooks/{Data!.ApplicationId}/{Data!.Token}", respData, new JsonSerializerOptions() { PropertyNamingPolicy = new SnakeCaseNamingPolicy() })) { }
             }
         }
@@ -127,7 +130,7 @@ namespace Interacord.Context
         /// <param name="component">A message component for the reply. Only use if you intend to give one component.</param>
         /// <param name="components">Multiple message components for the reply.</param>
         /// <param name="ephemeral">Decides if the message is gonna be ephemeral or not.</param>
-        public async Task EditReply(string messageContent = null!, Embed embed = null!, ActionRow component = null!, ActionRow[] components = null!, bool ephemeral = false)
+        public async Task EditReplyAsync(string messageContent = null!, Embed embed = null!, ActionRow component = null!, ActionRow[] components = null!, bool ephemeral = false)
         {
             using (HttpClient webClient = new HttpClient())
             {
@@ -151,8 +154,44 @@ namespace Interacord.Context
 
                 var content = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
 
-                using (HttpResponseMessage response = await webClient.PatchAsync($"https://discord.com/api/v10/webhooks/{Data!.ApplicationId}/{Data!.Token}/messages/{Data!.Message!.Id}", content)) { }
+                if (this.Data!.Data!.ComponentType != null) using (HttpResponseMessage response = await webClient.PatchAsync($"https://discord.com/api/v10/webhooks/{Data!.ApplicationId}/{Data!.Token}/messages/{Data!.Message!.Id}", content)) { }
+                else using (HttpResponseMessage response = await webClient.PatchAsync($"https://discord.com/api/v10/webhooks/{Data!.ApplicationId}/{Data!.Token}/messages/@original", content)) { };
             }
+        }
+
+        public void EditReply(string messageContent = null!, Embed embed = null!, ActionRow component = null!, ActionRow[] components = null!, bool ephemeral = false, bool dontRemoveComponents = true)
+        {
+            InteractionRespData respData = new InteractionRespData();
+
+            if (embed != null) respData.Data!.Embeds.Add(embed);
+            if (component != null) respData.Data!.Components!.Add(component);
+            if (components != null) respData.Data!.Components!.AddRange(components);
+            respData.Data!.Content = messageContent;
+
+            if (ephemeral)
+            {
+                BitField bitField = new BitField();
+                bitField.SetOn((ulong)MessageFlag.Ephemeral);
+
+                respData.Data!.Flags = (int)bitField.Mask;
+            }
+            if (dontRemoveComponents)
+            {
+                respData.Data.Components = null!;
+            }
+
+            respData.Type = EInteractionCallback.UPDATE_MESSAGE;
+
+            string respDataString = JsonSerializer.Serialize(respData, new JsonSerializerOptions() { PropertyNamingPolicy = new SnakeCaseNamingPolicy() });
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(respDataString);
+
+            this._resp.ContentLength64 = buffer.Length;
+
+            this._resp.OutputStream.Write(buffer, 0, buffer.Length);
+            this._resp.OutputStream.Flush();
+            this._resp.OutputStream.Dispose();
+
+            this._resp.Close();
         }
     }
 
@@ -162,19 +201,41 @@ namespace Interacord.Context
     /// <seealso cref="InteractionContext"/>
     public class CommandContext : InteractionContext
     {
-        public CommandContext(HttpListenerResponse resp, Interaction data) : base(resp, data){}
+        public CommandContext(HttpListenerResponse resp, Interaction data) : base(resp, data) { }
         /// <summary>
         /// Gets a option that was provided when the interaction was executed.
         /// </summary>
         /// <param name="name"></param>
         /// <returns>A string with the option value or null.</returns>
-        public string? GetOptionsString(string name)
+        public string? GetOptionString(string name)
         {
             var result = this.Data!.Data!.Options!.Find(x => x.Name.Contains(name)) ?? null!;
 
             if (result == null) return null!;
 
-            return result.Value;
+            return Convert.ToString(result.Value);
+        }
+        public int? GetOptionInt(string name)
+        {
+            var result = this.Data!.Data!.Options!.Find(x => x.Name.Contains(name)) ?? null!;
+
+            if (result == null) return null!;
+
+            return result.Value.GetValueOrDefault().GetInt32();
+        }
+
+        public async Task<Message>? GetOriginalMessage()
+        {
+            using (var client = new HttpClient())
+            {
+                using (var response = await client.GetAsync($"https://discord.com/api/v10/webhooks/{Data!.ApplicationId}/{Data.Token}/messages/@original"))
+                {
+                    var rawData = await response.Content.ReadAsStringAsync();
+                    var Data = JsonSerializer.Deserialize<Message?>(rawData);
+
+                    return Data ?? null!;
+                }
+            }
         }
     }
     /// <summary>
@@ -183,12 +244,14 @@ namespace Interacord.Context
     /// <seealso cref="InteractionContext"/>
     public class ComponentContext : InteractionContext
     {
+        public List<string>? ComponentParameters { get; internal set; }
+
         public ComponentContext(HttpListenerResponse resp, Interaction data) : base(resp, data) { }
         /// <summary>
         /// Gets a string list with an array of selected object's in a select menu.
         /// </summary>
         /// <returns>A list of strings.</returns>
-        public List<string> GetSelectOptions() 
+        public List<string> GetSelectOptions()
         {
             return Data!.Data!.Values!;
         }

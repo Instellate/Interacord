@@ -11,6 +11,10 @@ public class Program
         _client.RegisterMessageComponents(AppDomain.CurrentDomain.GetAssemblies());
         _client.Start();
 
+        // _client.restClient?.Send(Environment.GetEnvironmentVariable("botToken")!);
+
         Thread.Sleep(-1);
+
+        return;
     }
 }

@@ -21,6 +21,7 @@ namespace Interacord
         internal PublicKey _importedKey;
         internal Dictionary<string, CommandObject> _commands = new();
         internal Dictionary<string, MessageComponentObject> _messageComponents = new();
+        public RestClient restClient;
         /// <summary>
         /// The primary constructor
         /// </summary>
@@ -32,7 +33,9 @@ namespace Interacord
             this._botToken = botToken;
             this._publicKey = publicKey;
             this._port = port;
-            this._webServer.Prefixes.Add("http://127.0.0.1:" + this._port + '/');
+            // this._webServer.Prefixes.Add("http://127.0.0.1:" + this._port + '/');
+            this._webServer.Prefixes.Add("http://*:" + this._port + '/');
+            this.restClient = new(this._botToken);
 
             var algorithm = SignatureAlgorithm.Ed25519;
             this._importedKey = PublicKey.Import(algorithm, Convert.FromHexString(this._publicKey), KeyBlobFormat.RawPublicKey);
@@ -44,7 +47,7 @@ namespace Interacord
         public void Start()
         {
             _webServer.Start();
-            _webServer.BeginGetContext(RequestManagement, this);
+            _webServer.BeginGetContext(RequestManagementAsync, this);
         }
 
         /// <summary>
@@ -71,7 +74,7 @@ namespace Interacord
         /// A method that handles request's.
         /// </summary>
         /// <param name="result"></param>
-        private static async void RequestManagement(IAsyncResult result)
+        private static async void RequestManagementAsync(IAsyncResult result)
         {
             var algorithm = SignatureAlgorithm.Ed25519;
 
@@ -79,7 +82,7 @@ namespace Interacord
             var _webServer = _client!._webServer;
 
             var ctx = _webServer.EndGetContext(result);
-            _webServer.BeginGetContext(RequestManagement, _client);
+            _webServer.BeginGetContext(RequestManagementAsync, _client);
 
             var req = ctx.Request;
             var resp = ctx.Response;
@@ -103,6 +106,9 @@ namespace Interacord
                 var reqHexSign = Convert.FromHexString(reqSign);
 
                 isVerifiedReq = algorithm.Verify(_client._importedKey, reqByteData, reqHexSign);
+
+                req.InputStream.Flush();
+                req.InputStream.Dispose();
             }
 
             if (!isVerifiedReq) { resp.Close(); return; };
@@ -123,10 +129,14 @@ namespace Interacord
                 resp.ContentLength64 = buffer.Length;
 
                 resp.OutputStream.Write(buffer, 0, buffer.Length);
+                resp.OutputStream.Flush();
+                resp.OutputStream.Dispose();
 
                 resp.Close();
 
-            } else if (interactionData.Type == EInteractionType.APPLICATION_COMMAND) {
+            }
+            else if (interactionData.Type == EInteractionType.APPLICATION_COMMAND)
+            {
                 CommandObject? command = new CommandObject();
 
                 _client._commands.TryGetValue(interactionData.Data!.Name, out command);
@@ -137,29 +147,56 @@ namespace Interacord
 
                 object[] methodArgs = { interactionContext };
 
-                command.Method!.Invoke(null, methodArgs);
+                var isAwaitable = command.Method!.ReturnType.GetMethod(nameof(Task.GetAwaiter)) != null;
 
-            } else
+                if (isAwaitable)
+                {
+                    await (dynamic)command.Method!.Invoke(null, methodArgs)!;
+                }
+                else
+                {
+                    command.Method!.Invoke(null, methodArgs);
+                }
+
+            }
+            else
             {
                 MessageComponentObject? component = new();
 
-                _client._messageComponents.TryGetValue(interactionData.Data!.CustomId!, out component);
+                string[] CustomIds = interactionData.Data!.CustomId!.Split('/');
+
+                _client._messageComponents.TryGetValue(CustomIds![0], out component);
 
                 if (component == null) return;
 
                 if (component.Type != interactionData.Data.ComponentType) return;
 
                 var interactionContext = new ComponentContext(resp, interactionData);
+                if (CustomIds.Length <= 2)
+                {
+                    interactionContext.ComponentParameters = CustomIds.ToList<string>();
+                    interactionContext.ComponentParameters.RemoveAt(0);
+                }
 
                 object[] methodArgs = { interactionContext };
 
-                component.Method!.Invoke(null, methodArgs);
+                var isAwaitable = component.Method!.ReturnType.GetMethod(nameof(Task.GetAwaiter)) != null;
+
+                if (isAwaitable)
+                {
+                    await (dynamic)component.Method!.Invoke(null, methodArgs)!;
+                }
+                else
+                {
+                    component.Method!.Invoke(null, methodArgs);
+                }
             }
 
-            if (resp != null) resp.Close();
+            if (resp != null) { resp.Close(); };
             return;
         }
     }
+
 
     /// <summary>
     /// A class for sname case naming policy.
