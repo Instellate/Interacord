@@ -139,11 +139,28 @@ namespace Interacord
             {
                 CommandObject? command = new CommandObject();
 
-                _client._commands.TryGetValue(interactionData.Data!.Name, out command);
+                string commandName = interactionData.Data!.Name;
+                bool isSubCommand = false;
 
-                if (command == null) return;
+                InteractionOption? subCommand = interactionData.Data!.Options?.Where(x => x.Type == 1).FirstOrDefault();
+
+                if (subCommand is not null)
+                {
+                    commandName += " " + subCommand.Name;
+                    isSubCommand = true;
+                    Console.WriteLine(commandName);
+                }
+
+                _client._commands.TryGetValue(commandName, out command);
+
+                if (command is null) return;
 
                 var interactionContext = new CommandContext(resp, interactionData);
+
+                if (isSubCommand)
+                {
+                    interactionData.Data.Options = subCommand!.Options;
+                }
 
                 object[] methodArgs = { interactionContext };
 
@@ -157,7 +174,6 @@ namespace Interacord
                 {
                     command.Method!.Invoke(null, methodArgs);
                 }
-
             }
             else
             {
@@ -172,7 +188,7 @@ namespace Interacord
                 if (component.Type != interactionData.Data.ComponentType) return;
 
                 var interactionContext = new ComponentContext(resp, interactionData);
-                if (CustomIds.Length <= 2)
+                if (CustomIds.Length >= 2)
                 {
                     interactionContext.ComponentParameters = CustomIds.ToList<string>();
                     interactionContext.ComponentParameters.RemoveAt(0);
