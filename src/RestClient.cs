@@ -22,7 +22,7 @@ namespace Interacord
         public async Task Send(string channelId, string? content)
         {
             using (HttpClient client = new HttpClient())
-            await using (var stream = System.IO.File.OpenRead(@"C:\Users\love_\OneDrive\Bilder\AnimeFanart\87033410_p0.png"))
+            await using (var stream = System.IO.File.OpenRead(@"C:\Users\user\OneDrive\Photos\AnimeFanart\87033410_p0.png"))
             {
                 using var multiContent = new MultipartFormDataContent();
 

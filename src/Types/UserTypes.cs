@@ -5,8 +5,8 @@
         public string Id { get; set; } = null!;
         public string Username { get; set; } = null!;
         public string Discriminator { get; set; } = null!;
-        public Uri? Avatar { get; set; } 
-        public bool? Bot { get; set; } 
+        public Uri? Avatar { get; set; }
+        public bool? Bot { get; set; }
         public bool? System { get; set; }
         public bool? MfaEnabled { get; set; }
         public string? Banner { get; set; }

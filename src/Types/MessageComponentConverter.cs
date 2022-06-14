@@ -28,7 +28,8 @@ namespace Interacord.Types.Converter
                     4 => JsonSerializer.Deserialize<TextInput>(messageComponent, options)!,
                     _ => throw new InvalidMessageComponentType("The type number is invalid and cannot be deserialized")
                 };
-            } else
+            }
+            else
             {
                 return null!;
             }

@@ -21,7 +21,7 @@ namespace Interacord
         internal PublicKey _importedKey;
         internal Dictionary<string, CommandObject> _commands = new();
         internal Dictionary<string, MessageComponentObject> _messageComponents = new();
-        public RestClient restClient;
+        private RestClient restClient;
         /// <summary>
         /// The primary constructor
         /// </summary>
@@ -142,13 +142,12 @@ namespace Interacord
                 string commandName = interactionData.Data!.Name;
                 bool isSubCommand = false;
 
-                InteractionOption? subCommand = interactionData.Data!.Options?.Where(x => x.Type == 1).FirstOrDefault();
+                InteractionOption? subCommand = interactionData.Data!.Options?.Where(x => x.Type == EInteractionOptionType.SubCommand).FirstOrDefault();
 
                 if (subCommand is not null)
                 {
                     commandName += " " + subCommand.Name;
                     isSubCommand = true;
-                    Console.WriteLine(commandName);
                 }
 
                 _client._commands.TryGetValue(commandName, out command);

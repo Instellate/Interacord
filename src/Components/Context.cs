@@ -15,7 +15,13 @@ namespace Interacord.Context
     /// <remarks>Do not use this in your parameters. This do not give you all of the needed data.</remarks>
     public abstract class InteractionContext
     {
+        /// <summary>
+        /// The raw interaction data provided from discord
+        /// </summary>
         public Interaction? Data { get; set; }
+        /// <summary>
+        /// The Http Response. Used for initial usage methods.
+        /// </summary>
         internal HttpListenerResponse _resp { get; set; }
         internal InteractionContext(HttpListenerResponse resp, Interaction data)
         {
@@ -59,7 +65,7 @@ namespace Interacord.Context
             this._resp.Close();
         }
         /// <summary>
-        /// Let's you defer the reply and reply later on. Give's you more time.
+        /// Lets you defer the reply and reply later on. Give's you more time.
         /// </summary>
         /// <param name="ephemeral">Decides if the loading state is gonna be ephemeral or not.</param>
         public void DeferReply(bool ephemeral = false)
@@ -99,7 +105,7 @@ namespace Interacord.Context
         /// <param name="components">Multiple message components for the follow up.</param>
         /// <param name="ephemeral">Decides if the message is gonna be ephemeral or not.</param>
         /// <returns></returns>
-        public async Task FollowUp(string messageContent = null!, Embed embed = null!, ActionRow component = null!, ActionRow[] components = null!, bool ephemeral = false)
+        public async Task FollowUpAsync(string messageContent = null!, Embed embed = null!, ActionRow component = null!, ActionRow[] components = null!, bool ephemeral = false)
         {
             using (HttpClient webClient = new HttpClient())
             {
@@ -107,7 +113,9 @@ namespace Interacord.Context
 
                 respData.Content = messageContent;
                 if (component != null) respData.Components!.Add(component);
+                else respData.Components = null;
                 if (components != null) respData.Components!.AddRange(components);
+                else respData.Components = null;
                 if (embed != null) respData.Embeds.Add(embed);
 
                 if (ephemeral)
@@ -124,6 +132,7 @@ namespace Interacord.Context
         }
         /// <summary>
         /// Edit the reply of the current interaction.
+        /// Use <see cref="EditReply" /> if you want to edit without a initial usage.
         /// </summary>
         /// <param name="messageContent">The message content for the reply.</param>
         /// <param name="embed">The message embed for the reply.</param>
@@ -139,7 +148,10 @@ namespace Interacord.Context
 
                 respData.Content = messageContent;
                 if (component != null) respData.Components!.Add(component);
+                else respData.Components = null;
                 if (components != null) respData.Components!.AddRange(components);
+                else respData.Components = null;
+                respData.Content = messageContent;
                 if (embed != null) respData.Embeds.Add(embed);
 
                 if (ephemeral)
@@ -159,13 +171,24 @@ namespace Interacord.Context
             }
         }
 
-        public void EditReply(string messageContent = null!, Embed embed = null!, ActionRow component = null!, ActionRow[] components = null!, bool ephemeral = false, bool dontRemoveComponents = true)
+        /// <summary>
+        /// Edit the reply of the current interaction.
+        /// Use <see cref="EditReplyAsync" /> if you want to edit after doing a initial usage.
+        /// </summary>
+        /// <param name="messageContent">The message content for the reply.</param>
+        /// <param name="embed">The message embed for the reply.</param>
+        /// <param name="component">A message component for the reply. Only use if you intend to give one component.</param>
+        /// <param name="components">Multiple message components for the reply.</param>
+        /// <param name="ephemeral">Decides if the message is gonna be ephemeral or not.</param>
+        public void EditReply(string messageContent = null!, Embed embed = null!, ActionRow component = null!, ActionRow[] components = null!, bool ephemeral = false)
         {
             InteractionRespData respData = new InteractionRespData();
 
             if (embed != null) respData.Data!.Embeds.Add(embed);
             if (component != null) respData.Data!.Components!.Add(component);
+            else respData.Data!.Components = null;
             if (components != null) respData.Data!.Components!.AddRange(components);
+            else respData.Data!.Components = null;
             respData.Data!.Content = messageContent;
 
             if (ephemeral)
@@ -174,10 +197,6 @@ namespace Interacord.Context
                 bitField.SetOn((ulong)MessageFlag.Ephemeral);
 
                 respData.Data!.Flags = (int)bitField.Mask;
-            }
-            if (dontRemoveComponents)
-            {
-                respData.Data.Components = null!;
             }
 
             respData.Type = EInteractionCallback.UPDATE_MESSAGE;
@@ -203,27 +222,57 @@ namespace Interacord.Context
     {
         public CommandContext(HttpListenerResponse resp, Interaction data) : base(resp, data) { }
         /// <summary>
-        /// Gets a option that was provided when the interaction was executed.
+        /// Gets a string option that was provided when the interaction was executed.
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns>A string with the option value or null.</returns>
+        /// <param name="name">The option string name.</param>
+        /// <returns>The option value as a string or null.</returns>
+        /// <exception cref="InvalidOptionTypeException" />
         public string? GetOptionString(string name)
         {
-            var result = this.Data!.Data!.Options!.Find(x => x.Name.Contains(name)) ?? null!;
+            var result = this.Data!.Data!.Options!.Find(x => x.Name.Equals(name)) ?? null!;
 
-            if (result == null) return null!;
+            if (result.Type != EInteractionOptionType.String) throw new InvalidOptionTypeException($"You can not use type {result.Type.ToString()} as a string.");
+            if (result is null) return null!;
 
             return Convert.ToString(result.Value);
         }
+
+        /// <summary>
+        /// Gets a integer option that was provided when the interaction was executed.
+        /// </summary>
+        /// <param name="name">The option string name.</param>
+        /// <returns>The option value as a integer or null.</returns>
+        /// <exception cref="InvalidOptionTypeException" />
         public int? GetOptionInt(string name)
         {
-            var result = this.Data!.Data!.Options!.Find(x => x.Name.Contains(name)) ?? null!;
+            var result = this.Data!.Data!.Options!.Find(x => x.Name.Equals(name)) ?? null!;
 
-            if (result == null) return null!;
+            if (result.Type != EInteractionOptionType.Integer) throw new InvalidOptionTypeException($"You can not use type {result.Type.ToString()} as a integer.");
+            if (result is null) return null!;
 
             return result.Value.GetValueOrDefault().GetInt32();
         }
 
+        /// <summary>
+        /// Gets a double option that was provided when the interaction was executed.
+        /// </summary>
+        /// <param name="name">The option string name.</param>
+        /// <returns>The option value as a double or null.</returns>
+        /// <exception cref="InvalidOptionTypeException" />
+        public double? GetOptionDouble(string name)
+        {
+            var result = this.Data!.Data!.Options!.Find(x => x.Name.Equals(name)) ?? null!;
+
+            if (result.Type != EInteractionOptionType.Integer) throw new InvalidOptionTypeException($"You can not use type {result.Type.ToString()} as a double.");
+            if (result is null) return null!;
+
+            return result.Value.GetValueOrDefault().GetDouble();
+        }
+
+        /// <summary>
+        /// Returns the original message after initial usage method has been used.
+        /// </summary>
+        /// <returns></returns>
         public async Task<Message>? GetOriginalMessage()
         {
             using (var client = new HttpClient())
@@ -238,6 +287,15 @@ namespace Interacord.Context
             }
         }
     }
+
+    public class InvalidOptionTypeException : Exception
+    {
+        public InvalidOptionTypeException(string message) : base(message)
+        {
+
+        }
+    }
+
     /// <summary>
     /// A interaction context class for message components.
     /// </summary>

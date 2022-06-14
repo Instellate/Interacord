@@ -5,6 +5,7 @@ namespace Interacord.Components.Commands
 {
     internal class CommandService
     {
+
         internal static Dictionary<string, CommandObject> AddCommands(Assembly[] assembly)
         {
             var Result = new Dictionary<string, CommandObject>();
@@ -24,6 +25,7 @@ namespace Interacord.Components.Commands
 
             return Result;
         }
+
         internal static Dictionary<string, MessageComponentObject> AddMessageComponets(Assembly[] assembly)
         {
             var Result = new Dictionary<string, MessageComponentObject>();
@@ -75,7 +77,7 @@ namespace Interacord.Components.Commands
             this.Method = method;
             this.Type = type;
         }
-        internal MessageComponentObject(){}
+        internal MessageComponentObject() { }
     }
     /// <summary>
     /// A attribute used to define a command to a method.

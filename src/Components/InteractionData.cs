@@ -29,7 +29,8 @@ namespace Interacord.Components
     /// <summary>
     /// A class that stores most of the interaction data.
     /// </summary>
-    public class InteractionResponseData {
+    public class InteractionResponseData
+    {
         public bool? Tts { get; set; }
         public string? Content { get; set; }
         public List<Embed> Embeds { get; set; }

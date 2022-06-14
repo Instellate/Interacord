@@ -4,7 +4,9 @@
       "src": [
         {
           "src": "../src",
-          "files": ["**.csproj"]
+          "files": [
+            "**.csproj"
+          ]
         }
       ],
       "dest": "api",
@@ -49,6 +51,14 @@
     ],
     "dest": "_site",
     "globalMetadataFiles": [],
+    "globalMetadata": {
+      "_appTitle": "Interacord Documentation",
+      "_appFooter": "A discord library based on interaction endpoint!\nNot affiliated with Discord.",
+      "_gitContribute": {
+        "repo": "https://github.com/Instellate/Interacord",
+        "branch": "dev"
+      }
+    },
     "fileMetadataFiles": [],
     "template": [
       "default"
@@ -59,8 +69,8 @@
     "keepFileLink": false,
     "cleanupCacheHistory": false,
     "disableGitFeatures": false,
-    "_appTitle": "Interacord Documentation",
-    "_appFooter": "A library based on interaction endpoint!",
-    "xrefService": ["https://xref.docs.microsoft.com/query?uid={uid}"]
+    "xrefService": [
+      "https://xref.docs.microsoft.com/query?uid={uid}"
+    ]
   }
 }

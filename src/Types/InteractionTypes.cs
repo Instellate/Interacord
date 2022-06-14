@@ -43,7 +43,7 @@ namespace Interacord.Types
     public class InteractionOption : IEquatable<InteractionOption>
     {
         public string Name { get; set; } = null!;
-        public int Type { get; set; }
+        public EInteractionOptionType Type { get; set; }
         public System.Text.Json.JsonElement? Value { get; set; }
         public List<InteractionOption>? Options { get; set; }
         public bool? Focused { get; set; }

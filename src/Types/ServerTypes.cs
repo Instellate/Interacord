@@ -25,7 +25,7 @@
         public string? Topic { get; set; }
         public bool? Nsfw { get; set; }
         public string? LastMessageId { get; set; }
-        public int? Bitrate{ get; set; }
+        public int? Bitrate { get; set; }
         public int? UserLimit { get; set; }
         public int? RateLimitPerUser { get; set; }
         public User[]? Recipients { get; set; }

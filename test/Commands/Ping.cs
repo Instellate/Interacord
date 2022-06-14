@@ -29,9 +29,9 @@ namespace test.Commands
 
             ActionRow[] componentArray = { component, component2 };
 
-            string? fick = ctx.GetOptionsString("string");
+            string? fick = ctx.GetOptionString("string");
 
-            ctx.Reply("Reached! " + ctx.GetOptionsString("stringy"), components: componentArray);
+            ctx.Reply("Reached! " + ctx.GetOptionString("stringy"), components: componentArray);
         }
 
         [CommandName(name: "ping")]
@@ -49,29 +49,25 @@ namespace test.Commands
         }
 
         [MessageComponent(id: "button", type: "Button")]
-        public static async Task TestButton(ComponentContext ctx)
+        public static void TestButton(ComponentContext ctx)
         {
             string response = "<@" + ctx.Data!.Member!.User!.Id + "> clicked the button!";
 
-            ctx.DeferReply(ephemeral: true);
-
-            await ctx.EditReply(response);
+            ctx.EditReply(response, ephemeral: true);
 
             return;
         }
 
         [MessageComponent(id: "selectMenu", type: "SelectMenu")]
-        public static async Task TestSelectMenu(ComponentContext ctx)
+        public static void TestSelectMenu(ComponentContext ctx)
         {
-            ctx.DeferReply(ephemeral: true);
-
             var options = ctx.GetSelectOptions();
 
             string selected = string.Join(", ", options.ToArray());
 
             string response = $"<@{ctx.Data!.Member!.User!.Id}> selected {selected}";
 
-            await ctx.EditReply(response);
+            ctx.EditReply(response, ephemeral: true);
         }
     }
 }
