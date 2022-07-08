@@ -74,6 +74,7 @@ namespace Interacord
         /// A method that handles request's.
         /// </summary>
         /// <param name="result"></param>
+
         private static async void RequestManagementAsync(IAsyncResult result)
         {
             var algorithm = SignatureAlgorithm.Ed25519;

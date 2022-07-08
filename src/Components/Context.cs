@@ -80,8 +80,6 @@ namespace Interacord.Context
                 respData.Data!.Flags = (int)bitField.Mask;
             }
 
-
-
             if (this.Data!.Data!.ComponentType != null) respData.Type = EInteractionCallback.DEFERRED_UPDATE_MESSAGE;
             else respData.Type = ((EInteractionCallback)5);
 
@@ -96,6 +94,7 @@ namespace Interacord.Context
 
             this._resp.Close();
         }
+        
         /// <summary>
         /// Make a follow up to a reply.
         /// </summary>
@@ -184,11 +183,12 @@ namespace Interacord.Context
         {
             InteractionRespData respData = new InteractionRespData();
 
-            if (embed != null) respData.Data!.Embeds.Add(embed);
-            if (component != null) respData.Data!.Components!.Add(component);
+            if (embed is not null) respData.Data!.Embeds.Add(embed);
+
+            if (component is not null) respData.Data!.Components!.Add(component);
+            else if(components is not null) respData.Data!.Components!.AddRange(components);
             else respData.Data!.Components = null;
-            if (components != null) respData.Data!.Components!.AddRange(components);
-            else respData.Data!.Components = null;
+            
             respData.Data!.Content = messageContent;
 
             if (ephemeral)
@@ -231,8 +231,8 @@ namespace Interacord.Context
         {
             var result = this.Data!.Data!.Options!.Find(x => x.Name.Equals(name)) ?? null!;
 
-            if (result.Type != EInteractionOptionType.String) throw new InvalidOptionTypeException($"You can not use type {result.Type.ToString()} as a string.");
             if (result is null) return null!;
+            if (result.Type != EInteractionOptionType.String) throw new InvalidOptionTypeException($"You can not use type {result.Type.ToString()} as a string.");
 
             return Convert.ToString(result.Value);
         }
@@ -247,8 +247,8 @@ namespace Interacord.Context
         {
             var result = this.Data!.Data!.Options!.Find(x => x.Name.Equals(name)) ?? null!;
 
-            if (result.Type != EInteractionOptionType.Integer) throw new InvalidOptionTypeException($"You can not use type {result.Type.ToString()} as a integer.");
             if (result is null) return null!;
+            if (result.Type != EInteractionOptionType.Integer) throw new InvalidOptionTypeException($"You can not use type {result.Type.ToString()} as a integer.");
 
             return result.Value.GetValueOrDefault().GetInt32();
         }

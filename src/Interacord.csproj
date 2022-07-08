@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<PackageVersion>0.3.0-alpha1</PackageVersion>
+	<PackageVersion>0.3.5-alpha1</PackageVersion>
 	<RepositoryType>git</RepositoryType>
 	<RepositoryUrl>https://github.com/Instellate/Interacord</RepositoryUrl>
 	<PackageProjectUrl>https://interacord.instellate.xyz/</PackageProjectUrl>
